@@ -24,7 +24,15 @@
 
 ## Usage
 
-Install. Clone. etc.
+Install.
+```
+npm install forklift
+```
+Clone.
+```
+git clone https://github.com/w-p/forklift.js.git
+```
+
 
 Stand up a Crate cluster, visit 0.0.0.0:4200.
 ```
