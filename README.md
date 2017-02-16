@@ -5,8 +5,7 @@
 # forklift.js
 <img src='https://img.shields.io/badge/coverage-93%25-brightgreen.svg?style=flat-square' alt='code-coverage'>
 <img src='https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square' alt='code-coverage'>
-<img src='https://img.shields.io/badge/npm-yes-blue.svg?style=flat-square' alt='code-coverage'>
-
+[![NPM](https://nodei.co/npm/forklift.js.png?mini=true)](https://npmjs.org/package/forklift.js)
 ## A node.js library for the [Crate](https://crate.io) database
 
 ## Status
