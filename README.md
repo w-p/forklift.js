@@ -137,6 +137,9 @@ forklift.send(query)
         res.data.forEach(function (d) {
             console.log(`${d.id}, ${d.name}, ${d.platform}, ${d.awesomeness}`);
         });
+        // query results:
+        //  5, Far Cry 3, PS3, 3
+        //  2, Last of Us, PS3, 5
     });
 ```
 
@@ -147,6 +150,7 @@ table.drop();
 forklift.send(table)
     .then(function (res) {
         console.log(res.responseCode, res.message);
+        // 200 'OK'
     });
 ```
 
