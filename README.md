@@ -7,7 +7,7 @@
 <img src='https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square' alt='code-coverage'>
 <img src='https://img.shields.io/badge/npm-not%20yet-red.svg?style=flat-square' alt='code-coverage'>
 
-## A node.js library for the [Crate](crate.io) database
+## A node.js library for the [Crate](https://crate.io) database
 
 ## Status
 
@@ -154,7 +154,13 @@ forklift.send(table)
     });
 ```
 
-#### SQL Test Data
+## SQL Test Data
 Pulled from [StackExchange Data Explorer](http://data.stackexchange.com/stackoverflow/query/new)
 - `stackoverflow-posts.json` The top 100 posts with 1000+ votes.
 - `stackoverflow-users.json` The top 1000 users by reputation from `stackoverflow-users.json`.
+
+## License
+MIT
+
+## Contributing
+Contributions welcome.
