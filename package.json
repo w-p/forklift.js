@@ -1,6 +1,6 @@
 {
   "name": "forklift.js",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "A node.js library for the Crate database",
   "main": "lib/index.js",
   "scripts": {

@@ -107,6 +107,40 @@ forklift.send(query)
 
 wait.for.time(1);
 
+// update
+var update = new cql.Update()
+    .table('games')
+    .column('awesomeness')
+    .value(5)
+    .where(
+        new cql.Expression()
+            .gte('awesomeness', 4)
+    );
+
+forklift.send(update)
+    .then(function (res) {
+        console.log(res.responseCode, res.message);
+        // 200 'OK'
+    });
+
+wait.for.time(1);
+
+// delete
+var del = new cql.Delete()
+    .table('games')
+    .where(
+        new cql.Expression()
+            .lte('awesomeness', 4)
+    );
+
+    forklift.send(update)
+        .then(function (res) {
+            console.log(res.responseCode, res.message);
+            // 200 'OK'
+        });
+
+    wait.for.time(1);
+
 // drop table
 table.drop();
 

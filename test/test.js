@@ -422,6 +422,54 @@ describe('forklift', function () {
         });
     });
 
+    describe('cql.Update', function () {
+        it('should update post scores between 5000, 6000 to 9999', function () {
+            var update = new cql.Update()
+                .table('SoPosts')
+                .column('score')
+                .value(9999)
+                .where(
+                    new cql.Expression().between('score', 5000, 6000)
+                );
+            return forklift.send(update)
+                .then(function (res) {
+                    var query = new cql.Select()
+                        .column('score')
+                        .from('SoPosts')
+                        .where(
+                            new cql.Expression().eq('score', 9999)
+                        );
+                    return forklift.send(query)
+                        .then(function (res) {
+                            var result = _.every(res.data, function (datum) {
+                                return datum.score === 9999;
+                            });
+                            return expect(result).to.equal(true);
+                        });
+                });
+        });
+    });
+
+    describe('cql.Delete', function () {
+        it('should delete posts with score of 9999', function () {
+            var expr = new cql.Expression().eq('score', 9999);
+            var del = new cql.Delete()
+                .table('SoPosts')
+                .where(expr);
+            return forklift.send(del)
+                .then(function (res) {
+                    var query = new cql.Select()
+                        .column('score')
+                        .from('SoPosts')
+                        .where(expr);
+                    return forklift.send(query)
+                        .then(function (res) {
+                            return expect(res.data.length).to.equal(0);
+                        });
+                });
+        });
+    });
+
     describe('cql.Table', function () {
         it('should drop a table named SoPosts', function () {
             postsTable.drop();

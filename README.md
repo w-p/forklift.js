@@ -18,11 +18,13 @@
 - [x] Schema: Generated Columns
 - [x] Schema: Fulltext Index Columns
 - [x] Expressions: Standard
+- [ ] Expressions: Math Operators
 - [x] Expressions: Fulltext Match
 - [x] Select
 - [x] Row: Insert
-- [ ] Row: Delete
-- [ ] Row: Update
+- [x] Row: Delete
+- [x] Row: Update
+- [ ] Models
 
 ## Usage
 
@@ -146,6 +148,42 @@ forklift.send(query)
         //  5, Far Cry 3, PS3, 3
         //  2, Last of Us, PS3, 5
     });
+```
+
+Update some data.
+```
+var update = new cql.Update()
+    .table('games')
+    .column('awesomeness')
+    .value(5)
+    .where(
+        new cql.Expression()
+            .gte('awesomeness', 4)
+    );
+
+forklift.send(update)
+    .then(function (res) {
+        console.log(res.responseCode, res.message);
+        // 200 'OK'
+    });
+```
+
+Delete some data.
+```
+var del = new cql.Delete()
+    .table('games')
+    .where(
+        new cql.Expression()
+            .lte('awesomeness', 4)
+    );
+
+    forklift.send(update)
+        .then(function (res) {
+            console.log(res.responseCode, res.message);
+            // 200 'OK'
+        });
+
+    wait.for.time(1);
 ```
 
 Drop the table.
