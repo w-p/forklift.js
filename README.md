@@ -26,13 +26,8 @@
 
 Install.
 ```
-npm install forklift
+npm install forklift.js
 ```
-Clone.
-```
-git clone https://github.com/w-p/forklift.js.git
-```
-
 
 Stand up a Crate cluster, visit 0.0.0.0:4200.
 ```
@@ -42,7 +37,7 @@ docker-compose up -d seed && docker-compose scale member=2
 Initialize and connect the client.
 Note: see ./test/readme-test.js for a runnable version of the following.
 ```
-var forklift = require('forklift');
+var forklift = require('forklift.js');
 var cql = forklift.cql;
 forklift.connect();
 ```
@@ -167,8 +162,17 @@ Pulled from [StackExchange Data Explorer](http://data.stackexchange.com/stackove
 - `stackoverflow-posts.json` The top 100 posts with 1000+ votes.
 - `stackoverflow-users.json` The top 1000 users by reputation from `stackoverflow-users.json`.
 
+## Developing / Contributing
+Contributions welcome.
+
+Clone, bring up a cluster, and test.
+```
+git clone https://github.com/w-p/forklift.js.git
+cd forklift.js
+docker-compose up -d seed && docker-compose scale member=2
+npm install --dev
+npm test
+```
+
 ## License
 MIT
-
-## Contributing
-Contributions welcome.

@@ -18,7 +18,7 @@ describe('forklift', function () {
     this.timeout(6000);
     var data = require('./stackoverflow-posts.json');
     var users = require('./stackoverflow-users.json');
-    var forklift = require('../lib/index.js');
+    var forklift = require('../');
     var cql = forklift.cql;
     // needed to drop later
     var postsTable = '';

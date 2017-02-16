@@ -1,6 +1,6 @@
 {
   "name": "forklift.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A node.js library for the Crate database",
   "main": "lib/index.js",
   "scripts": {
@@ -31,7 +31,6 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "documentation": "^4.0.0-beta.18",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-logger": "^1.0.5",

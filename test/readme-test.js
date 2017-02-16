@@ -115,3 +115,5 @@ forklift.send(table)
         console.log(res.responseCode, res.message);
         // 200 'OK'
     });
+
+wait.for.time(1);
