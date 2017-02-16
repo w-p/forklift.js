@@ -133,13 +133,13 @@ var del = new cql.Delete()
             .lte('awesomeness', 4)
     );
 
-    forklift.send(update)
-        .then(function (res) {
-            console.log(res.responseCode, res.message);
-            // 200 'OK'
-        });
+forklift.send(update)
+    .then(function (res) {
+        console.log(res.responseCode, res.message);
+        // 200 'OK'
+    });
 
-    wait.for.time(1);
+wait.for.time(1);
 
 // drop table
 table.drop();
