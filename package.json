@@ -4,7 +4,9 @@
   "description": "A node.js library for the Crate database",
   "main": "lib/index.js",
   "scripts": {
-    "test": "istanbul cover _mocha"
+    "readme": "nodejs test/readme-test.js",
+    "stress": "nodejs test/stress-test.js",
+    "test": "istanbul cover _mocha -- test/test.js"
   },
   "repository": {
     "type": "git",
