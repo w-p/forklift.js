@@ -1,0 +1,21 @@
+# crate config reference
+# https://raw.githubusercontent.com/crate/crate/d5d8c883a3383b26a885ce6c5b5d5a3b8b92e6ec/app/src/main/dist/config/crate.yml
+version: "2"
+services:
+    seed:
+        image: crate:latest
+        ports:
+            - "4200:4200"
+            - "4300:4300"
+        command: |
+            crate
+            -Des.gateway.expected_nodes=3
+            -Des.gateway.recover_after_nodes=2
+            -Des.discovery.zen.minimum_master_nodes=2
+    member:
+        image: crate:latest
+        command: |
+            crate
+            -Des.gateway.expected_nodes=3
+            -Des.gateway.recover_after_nodes=2
+            -Des.discovery.zen.minimum_master_nodes=2
