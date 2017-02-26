@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "name": "Will",
+        "favorite_game": 3
+    },
+    {
+        "id": 2,
+        "name": "Chris",
+        "favorite_game": 5
+    },
+    {
+        "id": 3,
+        "name": "Dick",
+        "favorite_game": 1
+    },
+    {
+        "id": 4,
+        "name": "Bryan",
+        "favorite_game": 8
+    }
+]

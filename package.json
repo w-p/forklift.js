@@ -1,12 +1,11 @@
 {
   "name": "forklift.js",
-  "version": "1.0.7",
-  "description": "A node.js library for the Crate database",
+  "version": "2.1.0",
+  "description": "A Promise-based node.js library for the Crate database",
   "main": "lib/index.js",
   "scripts": {
-    "readme": "nodejs test/readme-test.js",
-    "stress": "nodejs test/stress-test.js",
-    "test": "istanbul cover _mocha -- test/test.js"
+    "stress-test": "nodejs --expose-gc test/stress-test.js",
+    "test": "istanbul cover _mocha -- test/tests.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +26,10 @@
   "author": "Will Palmer will@steelhive.com",
   "license": "MIT",
   "dependencies": {
+    "debug": "^2.6.1",
     "lodash": "^4.17.4",
+    "pg": "^6.1.2",
+    "pg-native": "^1.10.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
   },

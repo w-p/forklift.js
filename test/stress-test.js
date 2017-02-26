@@ -1,133 +1,118 @@
-// setup
+
 var _ = require('lodash');
 var uuid = require('uuid/v4');
 var Promise = require('bluebird');
 
 var forklift = require('../');
 var cql = forklift.cql;
-forklift.connect();
 
-var count = 10000;
-
-function getLogData (count) {
-    var schema = {
-        id: new cql.Column('id').type('string').primary(),
-        timestamp: new cql.Column('timestamp').type('timestamp'),
-        value: new cql.Column('value').type('string')
-    };
-    var data = _.times(count, function () {
-        return {
-            id: uuid(),
-            timestamp: Date.now(),
-            value: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-        };
-    });
-    return {table: 'StressTestLog', schema: schema, data: data};
-}
-
-function getMetricData (count) {
-    var schema = {
-        id: new cql.Column('id').type('string').primary(),
-        timestamp: new cql.Column('timestamp').type('timestamp'),
-        value: new cql.Column('value').type('integer')
-    };
-    var data = _.times(count, function () {
-        return {
-            id: uuid(),
-            timestamp: Date.now(),
-            value: Math.random() * (100 - 1) + 1
-        };
-    });
-    return {table: 'StressTestMetric', schema: schema, data: data};
-}
-
-function getArrayData (count) {
-    var schema = {
-        id: new cql.Column('id').type('string').primary(),
-        timestamp: new cql.Column('timestamp').type('timestamp'),
-        value: new cql.Column('value').type('array(string)')
-    };
-    var data = _.times(count, function () {
-        return {
-            id: uuid(),
-            timestamp: Date.now(),
-            value: ['foo', 'bar', 'baz']
-        };
-    });
-    return {table: 'StressTestArray', schema: schema, data: data};
-}
-
-function getObjectData (count) {
-    var schema = {
-        id: new cql.Column('id').type('string').primary(),
-        timestamp: new cql.Column('timestamp').type('timestamp'),
-        value: new cql.Column('value').type('object')
-    };
-    var data = _.times(count, function () {
-        return {
-            id: uuid(),
-            timestamp: Date.now(),
-            value: {foo: 'bar', baz: 'bah'}
-        };
-    });
-    return {table: 'StressTestObject', schema: schema, data: data};
-}
-
-var tests = [
-    getLogData(count),
-    getArrayData(count),
-    getMetricData(count),
-    getObjectData(count)
-];
-
-var testStart = Date.now();
-console.log('starting bulk tests with ', count, ' records');
-
-var results = _.map(tests, function (test) {
-    var table = new cql.Table(test.table)
-        .create()
-        .columns(test.schema);
-    var insert = new cql.Insert()
-        .into(test.table)
-        .bulk(test.data);
-    var start = 0;
-
-    return forklift.send(table)
-        .then(function (res) {
-            start = Date.now();
-            return forklift.send(insert);
-        })
-        .then(function (res) {
-            var end = Date.now();
-            var total = end - start;
-            console.log(test.table);
-            console.log(' - insert start:', start);
-            console.log(' - insert end:  ', end)
-            console.log(' - total time:  ', total / 1000, 's');
-            table.drop();
-            return forklift.send(table);
-        })
-        .then(function (res) {
-        })
-        .catch(function (err) {
-            if (err.errorCode === 4093) {
-                table.drop();
-                return forklift.send(table).then(function () {
-                    console.log(test.table, 'duplicate dropped');
-                });
-            } else {
-                throw err;
-            }
-        });
+process.on("unhandledRejection", function(reason, promise) {
+    console.log('REJECTED:', reason);
 });
 
-// console.log('starting serial tests with ', count, ' records');
+process.on("rejectionHandled", function(promise) {
+    console.log('REJECTION HANDLED:', reason);
+});
 
-Promise.all(results).then(function () {
-    var testEnd = Date.now();
-    var testTime = testEnd - testStart;
-    console.log('finished');
-    console.log(' total time:         ', testTime / 1000, 's');
-    console.log(' tables created:     ', results.length);
-    console.log(' rows written (bulk):', results.length * count);
+function getMem (type='heapUsed') {
+    return (process.memoryUsage()[type] / 1024 / 1024).toFixed(3);
+}
+
+function buildData (table, type, count) {
+    return {
+        table: table,
+        schema: [
+            new cql.Column('id').type('string').primary(),
+            new cql.Column('timestamp').type('timestamp'),
+            new cql.Column('value').type(type)
+        ],
+        rows: _.times(count, function () {
+            var value = '';
+            if (type === 'string') {
+                value = 'Lorem ipsum dolor sit amet, consectetur adip...';
+            } else if (type === 'integer') {
+                value = Math.random() * (100 - 1) + 1;
+            } else if (type === 'array(string)') {
+                value = ['foo', 'bar', 'baz'];
+            } else if (type === 'object') {
+                value = {foo: 'bar', baz: 'bah'};
+            } else {
+                throw Error('Invalid data type provided');
+            }
+            return {
+                id: uuid(),
+                timestamp: Date.now(),
+                value: value
+            }
+        })
+    };
+}
+
+// number of rows to create
+var count = 100000;
+// shards in cluster
+var shards = 6;
+// replicas in cluster
+var replicas = 1;
+
+// data type - un/comment to switch
+var data = buildData('strings', 'string', count);
+// var data = buildData('integers', 'integer', count);
+// var data = buildData('arrays', 'array(string)', count);
+// var data = buildData('objects', 'object', count);
+
+var table = new cql.Table(data.table)
+    .columns(...data.schema)
+    .clusterShards(shards)
+    .with({number_of_replicas: replicas});
+
+forklift.connect();
+
+function fire (chunksize) {
+    var startTime = Date.now();
+    var maxMem = getMem();
+    var chunks = _.chunk(data.rows, chunksize);
+    return forklift.send(table.create()).then(function () {
+        start = Date.now();
+        return Promise.all(_.map(chunks, function (chunk) {
+            var mem = getMem();
+            maxMem = mem > maxMem ? mem : maxMem;
+            return forklift.send(
+                new cql.Insert().into(data.table).data(chunk)
+            );
+        }));
+    }).then(function () {
+        var ms = Date.now() - startTime;
+        var avg_ms = (ms / data.rows.length).toFixed(4);
+        var mem = getMem();
+        maxMem = mem > maxMem ? mem : maxMem;
+        console.log(`* chunk: ${chunksize}  time: ${ms} ms  avg/row: ${avg_ms} ms  max mem: ${maxMem} mb`);
+        return forklift.send(table.drop());
+    });
+}
+
+console.log(`rows:     ${data.rows.length}`);
+console.log(`shards:   ${shards}`);
+console.log(`replicas: ${replicas}\n`);
+
+fire(1).then(function () {
+    return fire(1000);
+}).then(function () {
+    return fire(2000);
+}).then(function () {
+    return fire(3000);
+}).then(function () {
+    return fire(4000);
+}).then(function () {
+    return fire(5000);
+}).then(function () {
+    return fire(6000);
+}).then(function () {
+    return fire(7000);
+}).then(function () {
+    return fire(8000);
+}).then(function () {
+    return fire(9000);
+}).then(function () {
+    return fire(10000);
 });

@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "name": "Breath of Fire",
+        "platform": "SNES",
+        "type": "RPG"
+    },
+    {
+        "id": 2,
+        "name": "Half-Life",
+        "platform": "PC",
+        "type": "First Person"
+    },
+    {
+        "id": 3,
+        "name": "Fallout 3",
+        "platform": "PC",
+        "type": "First Person"
+    },
+    {
+        "id": 4,
+        "name": "Uncharted 4: A Thief's End",
+        "platform": "PS4",
+        "type": "Third Person"
+    },
+    {
+        "id": 5,
+        "name": "Counter Strike",
+        "platform": "PC",
+        "type": "First Person"
+    },
+    {
+        "id": 6,
+        "name": "Hitman 3",
+        "platform": "PS3",
+        "type": "Third Person"
+    },
+    {
+        "id": 7,
+        "name": "Last of Us",
+        "platform": "PS3",
+        "type": "Third Person"
+    },
+    {
+        "id": 8,
+        "name": "Final Fantasy XV",
+        "platform": "Xbox One",
+        "type": "RPG"
+    }
+]
