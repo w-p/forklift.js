@@ -128,7 +128,7 @@ var insert = new cql.Insert()
     .into('games')
     .data(games);
 
-forklift.send(games).then(function (res) {
+forklift.send(insert).then(function (res) {
     console.log(res);
 });
 ```
@@ -181,7 +181,7 @@ var del = new cql.Delete()
             .lte('rating', 8)
     );
 
-forklift.send(update).then(function (res) {
+forklift.send(del).then(function (res) {
     console.log(res);
 });
 ```
