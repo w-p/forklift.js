@@ -64,7 +64,7 @@ sudo apt-get install libpq-dev
 npm install forklift.js
 ```
 
-Stand up a Crate cluster, visit 0.0.0.0:5432.
+Stand up a Crate cluster, visit 0.0.0.0:4200.
 ```
 docker-compose up -d seed && docker-compose scale member=2
 ```
