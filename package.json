@@ -1,11 +1,12 @@
 {
   "name": "forklift.js",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A Promise-based node.js library for the Crate database",
   "main": "lib/index.js",
   "scripts": {
+    "test": "istanbul cover _mocha -- test/tests.js",
     "stress-test": "nodejs --expose-gc test/stress-test.js",
-    "test": "istanbul cover _mocha -- test/tests.js"
+    "readme-test": "DEBUG=* nodejs test/readme.js"
   },
   "repository": {
     "type": "git",

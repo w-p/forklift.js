@@ -1,6 +1,7 @@
 
 
 var wait = require('wait-for-stuff').for.time;
+var debug = require('debug')('test');
 var forklift = require('../');
 var cql = forklift.cql;
 forklift.connect();
@@ -72,24 +73,24 @@ var del = new cql.Delete()
     );
 
 forklift.send(table).then(function (res) {
-    console.log('table:', res);
+    debug(`table create response: ${JSON.stringify(res)}`);
     return forklift.send(insert);
 }).then(function (res) {
-    console.log('insert:', res);
+    debug(`insert response: ${JSON.stringify(res)}`);
     wait(1);
     return forklift.send(query);
 }).then(function (res) {
-    console.log('query:');
+    debug('query response:');
     res.rows.forEach(function (row) {
-        console.log(`${row.name}, ${row.platform}, ${row.rating}`);
+        debug(` ${row.name}, ${row.platform}, ${row.rating}`);
     });
     return forklift.send(update);
 }).then(function (res) {
-    console.log('update:', res);
+    debug(`update response: ${JSON.stringify(res)}`);
     return forklift.send(del);
 }).then(function (res) {
-    console.log('delete:', res);
+    debug(`delete response: ${JSON.stringify(res)}`);
     return forklift.send(table.drop());
 }).then(function (res) {
-    console.log('table:', res);
+    debug(`table drop response: ${JSON.stringify(res)}`);
 });
