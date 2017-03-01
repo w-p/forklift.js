@@ -30,6 +30,7 @@
     "debug": "^2.6.1",
     "lodash": "^4.17.4",
     "pg": "^6.1.2",
+    "pg-format": "^1.0.4",
     "pg-native": "^1.10.0",
     "request": "^2.79.0",
     "request-promise": "^4.1.1"
