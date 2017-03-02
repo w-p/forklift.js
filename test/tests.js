@@ -4,7 +4,6 @@ var mocha = require('mocha');
 var assert = require('assert');
 var log = require('mocha-logger');
 var expect = require('chai').expect;
-var wait = require('wait-for-stuff').for.time;
 var forklift = require('../');
 var cql = forklift.cql;
 
@@ -31,10 +30,12 @@ var delay = 1;
 
 describe('forklift', function () {
 
+    forklift.connect();
     this.timeout(10000);
 
     var test_table = new cql.Table('data_types')
         .create()
+        .ifNotExists()
         .columns(
             new cql.Column('integer_col').type('integer').primary(),
             new cql.Column('short_col').type('short').required(),
@@ -98,11 +99,6 @@ describe('forklift', function () {
     var game_rows = new cql.Insert().into('games').data(games);
     var reviewer_rows = new cql.Insert().into('reviewers').data(reviewers);
 
-
-    beforeEach(function () {
-        forklift.connect();
-    });
-
     describe('core', function () {
         it('should respond with system table rows', function () {
             return forklift.send('select *').then(function (res) {
@@ -129,10 +125,10 @@ describe('forklift', function () {
                 return forklift.send(reviewer_table);
             }).then(function (res) {
                 expect(res.rows.length).to.equal(0);
-                return forklift.send(game_rows);
+                return forklift.sendAndRefresh(game_rows);
             }).then(function (res) {
                 expect(res.rows.length).to.equal(0);
-                return forklift.send(reviewer_rows);
+                return forklift.sendAndRefresh(reviewer_rows);
             }).then(function (res) {
                 return expect(res.rows.length).to.equal(0);
             })
@@ -147,8 +143,7 @@ describe('forklift', function () {
                 .columns(...columns)
                 .values(value)
                 .onDuplicateKey('short_col = short_col + 1');
-            return forklift.send(insert).then(function (res) {
-                wait(delay); // index build takes a second.
+            return forklift.sendAndRefresh(insert).then(function (res) {
                 return forklift.send('select * from data_types');
             }).then(function (res) {
                 return expect(res.rows.length).to.equal(1);
@@ -159,8 +154,7 @@ describe('forklift', function () {
             var insert = new cql.Insert()
                 .into('data_types')
                 .data(row);
-            return forklift.send(insert).then(function (res) {
-                wait(delay); // index build takes a second.
+            return forklift.sendAndRefresh(insert).then(function (res) {
                 return forklift.send('select * from data_types');
             }).then(function (res) {
                 return expect(res.rows.length).to.equal(2);
@@ -183,9 +177,6 @@ describe('forklift', function () {
                                 'long_col'
                             )
                             .from('data_types')
-                            // .from(
-                            //     new cql.Select().all().from('data_types')
-                            // )
                             .where(
                                 new cql.Expression().eq('integer_col', row.integer_col)
                             )
@@ -193,8 +184,7 @@ describe('forklift', function () {
                             .groupBy('long_col')
                     ]
                 );
-            return forklift.send(insert).then(function (res) {
-                wait(delay);
+            return forklift.sendAndRefresh(insert).then(function (res) {
                 return forklift.send('select * from data_types');
             }).then(function (res) {
                 return expect(res.rows.length).to.equal(3);
@@ -208,7 +198,7 @@ describe('forklift', function () {
                 .where(
                     new cql.Expression().eq('integer_col', 127)
                 );
-            return forklift.send(update).then(function (res) {
+            return forklift.sendAndRefresh(update).then(function (res) {
                 return forklift.send('select object_col from data_types where integer_col = 127');
             }).then(function (res) {
                 return expect(res.rows[0].object_col.foo).to.equal('something else');
@@ -269,6 +259,7 @@ describe('forklift', function () {
                 return expect(res.rows.length).to.be.gt(0);
             });
         });
+
         it('should join games and reviewers - cross', function () {
             var select = new cql.Select()
                 .columns(
@@ -285,6 +276,7 @@ describe('forklift', function () {
                 return expect(res.rows.length).to.equal(count);
             });
         });
+
         it('should join games and reviewers - left', function () {
             var select = new cql.Select()
                 .columns(
@@ -297,7 +289,6 @@ describe('forklift', function () {
                 .leftJoin('games as g', 'reviewers as r')
                 .on('g.id', 'r.favorite_game');
             return forklift.send(select).then(function (res) {
-                // _.forEach(res.rows, function (row) { console.log(row) });
                 return expect(res.rows.length).to.equal(games.length);
             });
         });
@@ -313,7 +304,6 @@ describe('forklift', function () {
                 .rightJoin('games as g', 'reviewers as r')
                 .on('g.id', 'r.favorite_game');
             return forklift.send(select).then(function (res) {
-                // _.forEach(res.rows, function (row) { console.log(row) });
                 return expect(res.rows.length).to.equal(reviewers.length);
             });
         });
@@ -329,7 +319,6 @@ describe('forklift', function () {
                 .fullJoin('games as g', 'reviewers as r')
                 .on('g.id', 'r.favorite_game');
             return forklift.send(select).then(function (res) {
-                // _.forEach(res.rows, function (row) { console.log(row) });
                 return expect(res.rows.length).to.be.gte(
                     Math.min(games.length, reviewers.length)
                 );
@@ -342,7 +331,8 @@ describe('forklift', function () {
                     new cql.Expression().eq('integer_col', 127)
                 );
             return forklift.send(del).then(function (res) {
-                wait(delay);
+                return forklift.send('refresh table data_types');
+            }).then(function (res) {
                 return forklift.send('select * from data_types');
             }).then(function (res) {
                 return expect(res.rows.length).to.be.eq(2);
