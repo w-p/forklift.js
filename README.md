@@ -5,10 +5,10 @@
 
 # forklift.js
 
-<img src='https://img.shields.io/badge/statement_coverage-97.9%25-brightgreen.svg?style=flat-square' alt='statement-coverage'>
-<img src='https://img.shields.io/badge/branch_coverage-86%25-brightgreen.svg?style=flat-square' alt='branch-coverage'>
-<img src='https://img.shields.io/badge/function_coverage-97.9%25-brightgreen.svg?style=flat-square' alt='function-coverage'>
-<img src='https://img.shields.io/badge/line_coverage-97.9%25-brightgreen.svg?style=flat-square' alt='line-coverage'>
+<img src='https://img.shields.io/badge/statement_coverage-96.96%25-brightgreen.svg?style=flat-square' alt='statement-coverage'>
+<img src='https://img.shields.io/badge/branch_coverage-85.06%25-brightgreen.svg?style=flat-square' alt='branch-coverage'>
+<img src='https://img.shields.io/badge/function_coverage-98.04%25-brightgreen.svg?style=flat-square' alt='function-coverage'>
+<img src='https://img.shields.io/badge/line_coverage-96.95%25-brightgreen.svg?style=flat-square' alt='line-coverage'>
 
 <img src='https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square' alt='license'>
 <img src='https://nodei.co/npm/forklift.js.png?mini=true' alt='npm'>
@@ -36,24 +36,21 @@ PERF:
 ```
 npm run stress-test
 
-> forklift.js@1.5.0 stress-test /data/projects/vortex/lib/forklift.js
-> nodejs --expose-gc test/stress-test.js
-
 rows:     100000
 shards:   6
 replicas: 1
 
-* chunk: 1  time: 150394 ms  avg/row: 1.5039 ms  max mem: 99.998 mb
-* chunk: 1000  time: 2458 ms  avg/row: 0.0246 ms  max mem: 88.875 mb
-* chunk: 2000  time: 4375 ms  avg/row: 0.0437 ms  max mem: 77.209 mb
-* chunk: 3000  time: 2386 ms  avg/row: 0.0239 ms  max mem: 96.321 mb
-* chunk: 4000  time: 1994 ms  avg/row: 0.0199 ms  max mem: 99.527 mb
-* chunk: 5000  time: 2118 ms  avg/row: 0.0212 ms  max mem: 85.365 mb
-* chunk: 6000  time: 2212 ms  avg/row: 0.0221 ms  max mem: 99.820 mb
-* chunk: 7000  time: 3035 ms  avg/row: 0.0303 ms  max mem: 80.765 mb
-* chunk: 8000  time: 2146 ms  avg/row: 0.0215 ms  max mem: 93.468 mb
-* chunk: 9000  time: 2381 ms  avg/row: 0.0238 ms  max mem: 91.611 mb
-* chunk: 10000  time: 2588 ms  avg/row: 0.0259 ms  max mem: 96.143 mb
+* chunk: 1  time: 243756 ms  avg/row: 2.4376 ms  max mem: 99.990 mb
+* chunk: 1000  time: 5946 ms  avg/row: 0.0595 ms  max mem: 83.736 mb
+* chunk: 2000  time: 4771 ms  avg/row: 0.0477 ms  max mem: 58.311 mb
+* chunk: 3000  time: 4443 ms  avg/row: 0.0444 ms  max mem: 61.225 mb
+* chunk: 4000  time: 4035 ms  avg/row: 0.0403 ms  max mem: 81.539 mb
+* chunk: 5000  time: 4936 ms  avg/row: 0.0494 ms  max mem: 73.033 mb
+* chunk: 6000  time: 4474 ms  avg/row: 0.0447 ms  max mem: 92.932 mb
+* chunk: 7000  time: 3917 ms  avg/row: 0.0392 ms  max mem: 164.269 mb
+* chunk: 8000  time: 3723 ms  avg/row: 0.0372 ms  max mem: 68.700 mb
+* chunk: 9000  time: 3744 ms  avg/row: 0.0374 ms  max mem: 86.052 mb
+* chunk: 10000  time: 4156 ms  avg/row: 0.0416 ms  max mem: 86.429 mb
 ```
 
 ## Usage
